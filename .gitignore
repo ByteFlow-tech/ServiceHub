@@ -5,7 +5,7 @@ __pycache__/
 storage.db
 # C extensions
 *.so
-
+hub-service-log.log
 # Distribution / packaging
 .Python
 build/

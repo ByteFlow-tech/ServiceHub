@@ -17,10 +17,11 @@ class StorageInteraction:
             return None
         return True
 
-    def check_user(self, username):
-        user = self.conn.query(Users).filter(Users.username == username).first()
+    def check_user(self, password):
+        user = self.conn.query(Users.username).filter(Users.password == password).first()
         if user is None:
             raise AuthException("User not Found")
+        return user[0]
 
     def create_user(self, username, password, privilege):
         auth_key = "".join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits)
