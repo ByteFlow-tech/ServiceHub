@@ -19,6 +19,7 @@ def init():
     # for i in tqdm(range(1324), ascii=True, desc="Initializing components"):
     #     time.sleep(0.001)
     #     pass
+    create_db_file = open("LocalStorageService/LocalStorage/storage.db", "a+")
     create_all()
 
 
