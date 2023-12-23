@@ -1,6 +1,3 @@
-import asyncio
-import threading
-import anyio
 import time
 
 # import click
@@ -9,12 +6,10 @@ from art import text2art
 from tqdm import tqdm
 
 from Core.Exceptions import AuthException
-from LocalStorageService.StorageInteraction import StorageInteraction
-from LocalStorageService.Models import create_all
+from Server.LocalStorageService import StorageInteraction
+from Server.LocalStorageService import create_all
 from Server.ServerInitialization import websocket_server_initialization
-from logger import log, err
-from CommandHeandler import CommandHandler
-
+from logger import err
 
 global DEFAULT_USER
 DEFAULT_USER = "srvh"
@@ -38,7 +33,7 @@ def prompt(placeholder: str, current_user: str = DEFAULT_USER):
 async def start():
     click.clear()
     click.echo(text2art("ServiceHUB", font="starwars"))
-    create_db_file = open("LocalStorageService/LocalStorage/storage.db", "a+")
+    create_db_file = open("Server/LocalStorageService/LocalStorage/storage.db", "a+")
     create_all()
     for _ in tqdm(range(1324), ascii=True, desc="Initializing components"):
         time.sleep(0.0001)

@@ -2,9 +2,9 @@ import random
 import string
 
 from Core.Exceptions import AuthException
-from LocalStorageService.Connection import get_db
+from Server.LocalStorageService.Connection import get_db
 
-from LocalStorageService.Models import Users, Pools, Connections
+from Server.LocalStorageService.Models import Users
 from logger import err
 
 

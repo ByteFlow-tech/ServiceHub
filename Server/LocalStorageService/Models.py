@@ -1,11 +1,10 @@
 import datetime
-from uuid import UUID
 
-from sqlalchemy import Integer, ForeignKey, Column, String, Boolean
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy import Integer, ForeignKey, Column, String, Boolean, Numeric
+from sqlalchemy.orm import DeclarativeBase, relationship
 from sqlalchemy.dialects.sqlite import DATETIME
 
-from LocalStorageService.Connection import engine
+from Server.LocalStorageService.Connection import engine
 
 
 class Base(DeclarativeBase):
@@ -49,6 +48,19 @@ class Connections(Base):
         "Pools",
         back_populates="connections"
     )
+
+
+class ActiveConnections(Base):
+    __tablename__ = "active_connections"
+
+    id = Column(Integer, primary_key=True)
+    origin_url = Column(String)
+    origin_port = Column(Integer)
+    state = Column(String)
+
+
+def drop_all():
+    Base.metadata.drop_all(bind=engine)
 
 
 def create_all():

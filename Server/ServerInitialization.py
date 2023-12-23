@@ -1,23 +1,38 @@
-import asyncio
-import websockets
+import ast
+#
+import uvicorn
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from starlette.websockets import WebSocketState
+
+from Server.Hub.Hub import Hub
+
+app = FastAPI()
+hub = Hub()
+sessions = []
 
 
-async def handler(websocket):
-    while True:
-        print(f"Connection established by {websocket}")
-        try:
-            message = await websocket.recv()
-            print("Message received: " + message)
-            await websocket.send("server state up")
-        except Exception as e:
-            print(e)
-            break
+@app.websocket('/ws/')
+async def service_connector(websocket: WebSocket):
+    await websocket.accept()
+    origin_service, origin_port = websocket.client
+    state = "OK" if websocket.client_state == WebSocketState.CONNECTED else "BAD"
+    session_id = hub.add_connection(origin_service, origin_port, state)
+    sessions.append({"id": session_id, "session": websocket})
+    try:
+        while True:
+            data = await websocket.receive_text()
+            data = ast.literal_eval(data)
+            session_id = hub.get_target_session(data['headers']["target-unique-service-name"])
+            for session in sessions:
+                if session["id"] == session_id[0]:
+                    await session["session"].send_text(str(data))
+    except WebSocketDisconnect:
+        hub.del_connection(origin_service)
 
 
-async def websocket_server_initialization():
-    await asyncio.sleep(1)
-    print("Server starting...")
-    async with websockets.serve(handler, "localhost", 7777):
-        await asyncio.sleep(1)
-        print("Server is running")
-        await asyncio.Future()
+@app.get('/state')
+async def get_state():
+    return "OK"
+
+if __name__ == '__main__':
+    uvicorn.run(app, port=7777)
