@@ -1,0 +1,11 @@
+{
+  "headers": {
+    "origin-host": "",
+    "target-unique-service-name": "",
+    "service-port": "",
+    "service-handler-name": ""
+  },
+  "payload": {
+    "handlers-args": []
+  }
+}
